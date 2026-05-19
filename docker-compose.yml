@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+
+  # ─── BASE DE DATOS ────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: baru-db
+    environment:
+      POSTGRES_USER: baru_user
+      POSTGRES_PASSWORD: baru_password
+      POSTGRES_DB: operadora_baru
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U baru_user -d operadora_baru"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── BACKEND ──────────────────────────────────────────────────────────────
+  backend:
+    build: ./back
+    container_name: baru-backend
+    environment:
+      DATABASE_URL: postgresql://baru_user:baru_password@postgres:5432/operadora_baru
+      JWT_SECRET: cambia_esto_por_una_clave_muy_segura_en_produccion
+      JWT_EXPIRES_IN: 8h
+      PORT: 3000
+      NODE_ENV: production
+      FRONTEND_URL: http://localhost
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── FRONTEND ─────────────────────────────────────────────────────────────
+  frontend:
+    build: ./front
+    container_name: baru-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads_data:

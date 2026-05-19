@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── USUARIOS ────────────────────────────────────────────────────────────────
+
+enum Role {
+  PROJECT_MANAGER
+  ADMIN_AREA
+  RRHH
+  COMUNICACION
+  COLABORADOR
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            Role      @default(COLABORADOR)
+  firstLogin      Boolean   @default(true)
+  active          Boolean   @default(true)
+  loginAttempts   Int       @default(0)
+  lockRound       Int       @default(0)
+  lockUntil       DateTime?
+  lockedPermanent Boolean   @default(false)
+  lastLoginAt     DateTime?
+  lastActivityAt  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  progresses CourseProgress[]
+  notices    Notice[]
+  reports    Report[]
+  devices    DeviceToken[]
+}
+
+// ─── DISPOSITIVOS AUTORIZADOS ─────────────────────────────────────────────────
+
+model DeviceToken {
+  id          String   @id @default(cuid())
+  fingerprint String
+  label       String   @default("Dispositivo desconocido")
+  status      String   @default("PENDING")   // PENDING | APPROVED | REJECTED
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastSeenAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, fingerprint])
+}
+
+// ─── CAPACITACIÓN ─────────────────────────────────────────────────────────────
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  instructor  String
+  description String?
+  category    String
+  mandatory     Boolean  @default(false)
+  videoUrl      String?
+  attachmentUrl String?
+  targetRoles   String[] @default([])
+  targetEmails  String[] @default([])
+  active        Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  progresses CourseProgress[]
+}
+
+model CourseProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  courseId    String
+  progress    Int       @default(0)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId],   references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+// ─── COMUNICACIÓN ─────────────────────────────────────────────────────────────
+
+model Notice {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  type      String   @default("info")
+  active    Boolean  @default(true)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+}
+
+model RseVideo {
+  id        String   @id @default(cuid())
+  title     String
+  url       String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// ─── INDICADORES RSE ──────────────────────────────────────────────────────────
+
+model Indicador {
+  id        String   @id @default(cuid())
+  category  String
+  label     String
+  value     Float
+  period    String
+  createdAt DateTime @default(now())
+}
+
+// ─── REPORTES ─────────────────────────────────────────────────────────────────
+
+model Report {
+  id          String   @id @default(cuid())
+  title       String
+  type        String
+  generatedBy String
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [generatedBy], references: [id])
+}
