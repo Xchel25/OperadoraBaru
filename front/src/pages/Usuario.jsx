@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { apiGetUsers, apiCreateUser, apiUpdateUser, apiGetPendingDevices, apiApproveDevice, apiRejectDevice } from "../services/api";
+import { apiGetUsers, apiCreateUser, apiUpdateUser, apiGetPendingDevices, apiApproveDevice, apiRejectDevice, apiGetUserDesempeno } from "../services/api";
 import {
   Users, CheckCircle, Shield, Plus, Search,
   UserCheck, UserX, Edit2, X, ChevronDown, Clock, Smartphone,
+  Award, BookOpen, Activity, TrendingUp, ChevronRight,
 } from "lucide-react";
 import { usePermission } from "../hooks/usePermission";
 import { ROLE_LABELS } from "../config/roles";
@@ -180,6 +181,296 @@ function RoleDivergingChart({ usuarios, loading }) {
         </p>
       </div>
     </div>
+  );
+}
+
+// ─── Calificación automática de desempeño ────────────────────────────────────
+
+const NIVEL = [
+  { min: 90, label: "Sobresaliente", emoji: "🏆", color: "text-emerald-700 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", bar: "bg-emerald-500" },
+  { min: 70, label: "Excelente",     emoji: "🟢", color: "text-green-600 dark:text-green-400",    bg: "bg-green-500/10",   border: "border-green-500/30",   bar: "bg-green-500"   },
+  { min: 50, label: "En desarrollo", emoji: "🟡", color: "text-amber-600 dark:text-amber-400",    bg: "bg-amber-500/10",   border: "border-amber-500/30",   bar: "bg-amber-500"   },
+  { min: 30, label: "Necesita mejora",emoji:"🟠", color: "text-orange-600 dark:text-orange-400",  bg: "bg-orange-500/10",  border: "border-orange-500/30",  bar: "bg-orange-500"  },
+  { min: 0,  label: "Requiere atención",emoji:"🔴",color:"text-red-600 dark:text-red-400",         bg: "bg-red-500/10",     border: "border-red-500/30",     bar: "bg-red-500"     },
+];
+
+function getNivel(pts) {
+  return NIVEL.find(n => pts >= n.min) || NIVEL[NIVEL.length - 1];
+}
+
+function calcularPuntuacion({ user, allCourses }) {
+  const progresses = user.progresses || [];
+  const obligatorios = allCourses.filter(c => c.mandatory);
+  const opcionales   = allCourses.filter(c => !c.mandatory);
+
+  // 40 pts: cursos obligatorios completados
+  const obligCompletados = obligatorios.filter(c =>
+    progresses.find(p => p.courseId === c.id && p.progress >= 100)
+  );
+  const ptsOblig = obligatorios.length
+    ? (obligCompletados.length / obligatorios.length) * 40 : 40;
+
+  // 20 pts: progreso acumulado en opcionales
+  const sumaOpc = opcionales.reduce((acc, c) => {
+    const p = progresses.find(pr => pr.courseId === c.id);
+    return acc + (p?.progress || 0);
+  }, 0);
+  const ptsOpc = opcionales.length ? (sumaOpc / (opcionales.length * 100)) * 20 : 20;
+
+  // 25 pts: actividad reciente (lastActivityAt)
+  const diasAct = user.lastActivityAt
+    ? (Date.now() - new Date(user.lastActivityAt)) / 86400000 : 999;
+  const ptsAct = diasAct < 1 ? 25 : diasAct < 3 ? 20 : diasAct < 7 ? 15
+               : diasAct < 14 ? 10 : diasAct < 30 ? 5 : 0;
+
+  // 15 pts: login reciente (lastLoginAt)
+  const diasLog = user.lastLoginAt
+    ? (Date.now() - new Date(user.lastLoginAt)) / 86400000 : 999;
+  const ptsLog = diasLog < 2 ? 15 : diasLog < 5 ? 12 : diasLog < 10 ? 8
+               : diasLog < 20 ? 4 : 0;
+
+  const total = Math.min(100, Math.round(ptsOblig + ptsOpc + ptsAct + ptsLog));
+  return {
+    total,
+    desglose: {
+      obligatorios: { pts: Math.round(ptsOblig), max: 40 },
+      opcionales:   { pts: Math.round(ptsOpc),   max: 20 },
+      actividad:    { pts: Math.round(ptsAct),    max: 25 },
+      consistencia: { pts: Math.round(ptsLog),    max: 15 },
+    },
+  };
+}
+
+// ─── Drawer de desempeño ──────────────────────────────────────────────────────
+
+function UserPerformanceDrawer({ open, onClose, desempeno, loading }) {
+  const fmtDate = d => d
+    ? new Date(d).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" })
+    : "—";
+  const fmtDateTime2 = d => d
+    ? new Date(d).toLocaleString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
+    : "—";
+
+  const puntuacion = desempeno ? calcularPuntuacion(desempeno) : null;
+  const nivel      = puntuacion ? getNivel(puntuacion.total) : null;
+  const u          = desempeno?.user;
+  const allCourses = desempeno?.allCourses || [];
+  const progresses = u?.progresses || [];
+
+  // Armar lista de cursos con progreso
+  const cursosConProgreso = allCourses.map(c => {
+    const p = progresses.find(pr => pr.courseId === c.id);
+    return { ...c, progress: p?.progress || 0, completedAt: p?.completedAt || null };
+  }).sort((a, b) => (b.mandatory ? 1 : 0) - (a.mandatory ? 1 : 0));
+
+  const completados   = cursosConProgreso.filter(c => c.progress >= 100).length;
+  const promedioTotal = cursosConProgreso.length
+    ? Math.round(cursosConProgreso.reduce((s, c) => s + c.progress, 0) / cursosConProgreso.length)
+    : 0;
+
+  const actStatus = u ? getActivityStatus(u) : null;
+
+  return (
+    <>
+      {/* Overlay */}
+      {open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" onClick={onClose} />
+      )}
+
+      {/* Drawer */}
+      <div className={`
+        fixed top-0 right-0 h-full w-full sm:w-[420px] z-50
+        bg-white dark:bg-[#0f1623]
+        border-l border-gray-200 dark:border-white/10
+        flex flex-col
+        transition-transform duration-300 ease-in-out
+        ${open ? "translate-x-0" : "translate-x-full"}
+      `}>
+
+        {/* Header */}
+        {u && (
+          <div className="px-5 pt-5 pb-4 border-b border-gray-100 dark:border-white/10 shrink-0">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${ROL_AVATAR[u.role] || "from-gray-400 to-gray-600"} flex items-center justify-center text-sm font-bold text-white shrink-0`}>
+                  {getInitials(u.name)}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-semibold text-gray-900 dark:text-white truncate">{u.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{u.email}</p>
+                  <span className={`inline-flex mt-1 text-[10px] px-2 py-0.5 rounded-full font-medium border ${ROL_COLOR[u.role] || ""}`}>
+                    {ROLE_LABELS[u.role] || u.role}
+                  </span>
+                </div>
+              </div>
+              <button onClick={onClose}
+                className="shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto">
+
+          {loading && (
+            <div className="p-6 space-y-4">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="h-16 rounded-xl bg-gray-100 dark:bg-white/5 animate-pulse" />
+              ))}
+            </div>
+          )}
+
+          {!loading && puntuacion && nivel && (
+            <div className="p-5 space-y-5">
+
+              {/* ── PUNTUACIÓN ── */}
+              <div className={`rounded-2xl border p-5 ${nivel.bg} ${nivel.border}`}>
+                <div className="flex items-center gap-2 mb-4">
+                  <Award className={`w-4 h-4 ${nivel.color}`} />
+                  <span className={`text-sm font-semibold ${nivel.color}`}>Puntuación de desempeño</span>
+                </div>
+
+                {/* Score circle + nivel */}
+                <div className="flex items-center gap-5 mb-5">
+                  <div className="relative w-20 h-20 shrink-0">
+                    <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+                      <circle cx="40" cy="40" r="32" fill="none" stroke="currentColor" strokeWidth="8" className="text-gray-200 dark:text-white/10" />
+                      <circle cx="40" cy="40" r="32" fill="none" strokeWidth="8"
+                        strokeLinecap="round"
+                        stroke={nivel.bar.replace("bg-", "").includes("emerald") ? "#10b981"
+                          : nivel.bar.includes("green") ? "#22c55e"
+                          : nivel.bar.includes("amber") ? "#f59e0b"
+                          : nivel.bar.includes("orange") ? "#f97316" : "#ef4444"}
+                        strokeDasharray={`${(puntuacion.total / 100) * 201} 201`}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xl font-black text-gray-900 dark:text-white">{puntuacion.total}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className={`text-lg font-bold ${nivel.color}`}>{nivel.emoji} {nivel.label}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">sobre 100 puntos</p>
+                  </div>
+                </div>
+
+                {/* Desglose */}
+                <div className="space-y-2.5">
+                  {[
+                    { label: "Cursos obligatorios", ...puntuacion.desglose.obligatorios },
+                    { label: "Cursos opcionales",   ...puntuacion.desglose.opcionales   },
+                    { label: "Actividad reciente",  ...puntuacion.desglose.actividad    },
+                    { label: "Consistencia login",  ...puntuacion.desglose.consistencia },
+                  ].map(({ label, pts, max }) => (
+                    <div key={label}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-gray-600 dark:text-gray-400">{label}</span>
+                        <span className="font-semibold text-gray-800 dark:text-white tabular-nums">{pts}/{max}</span>
+                      </div>
+                      <div className="h-1.5 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-700 ${nivel.bar}`}
+                          style={{ width: `${(pts / max) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── ACTIVIDAD ── */}
+              <div className="rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Activity className="w-4 h-4 text-gray-400 dark:text-white/40" />
+                  <span className="text-sm font-semibold text-gray-800 dark:text-white">Actividad</span>
+                  {actStatus && (
+                    <span className={`ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      actStatus.type === "online" ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400" :
+                      actStatus.type === "recent" ? "bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400"   :
+                      "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white/40"
+                    }`}>{actStatus.label}</span>
+                  )}
+                </div>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">Último login</span>
+                    <span className="font-medium text-gray-800 dark:text-white">{fmtDateTime2(u?.lastLoginAt)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">Última actividad</span>
+                    <span className="font-medium text-gray-800 dark:text-white">{u?.lastActivityAt ? timeAgo(u.lastActivityAt) : "—"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">Miembro desde</span>
+                    <span className="font-medium text-gray-800 dark:text-white">{fmtDate(u?.createdAt)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">Estado de cuenta</span>
+                    <span className={`font-medium ${u?.active ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"}`}>
+                      {u?.active ? "Activa" : "Inactiva"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── CAPACITACIÓN ── */}
+              <div className="rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <BookOpen className="w-4 h-4 text-gray-400 dark:text-white/40" />
+                  <span className="text-sm font-semibold text-gray-800 dark:text-white">Capacitación</span>
+                  <span className="ml-auto text-xs text-gray-500 dark:text-gray-400 tabular-nums">
+                    {completados}/{cursosConProgreso.length} completados
+                  </span>
+                </div>
+
+                {/* Barra de promedio general */}
+                <div className="mb-4">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-gray-500 dark:text-gray-400">Progreso promedio</span>
+                    <span className="font-semibold text-gray-800 dark:text-white">{promedioTotal}%</span>
+                  </div>
+                  <div className="h-2 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 rounded-full transition-all duration-700"
+                      style={{ width: `${promedioTotal}%` }} />
+                  </div>
+                </div>
+
+                {/* Lista de cursos */}
+                <div className="space-y-3">
+                  {cursosConProgreso.map(c => (
+                    <div key={c.id}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[10px] shrink-0 ${c.progress >= 100 ? "text-emerald-500" : "text-gray-300 dark:text-white/20"}`}>
+                          {c.progress >= 100 ? "✅" : "⏳"}
+                        </span>
+                        <span className="text-xs text-gray-700 dark:text-gray-300 flex-1 truncate">{c.title}</span>
+                        {c.mandatory && (
+                          <span className="shrink-0 text-[9px] px-1.5 py-0.5 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 border border-red-100 dark:border-red-500/20 font-medium">
+                            Obligatorio
+                          </span>
+                        )}
+                        <span className="shrink-0 text-xs font-semibold text-gray-700 dark:text-gray-300 tabular-nums w-9 text-right">
+                          {c.progress}%
+                        </span>
+                      </div>
+                      <div className="h-1 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden ml-5">
+                        <div
+                          className={`h-full rounded-full transition-all duration-700 ${c.progress >= 100 ? "bg-emerald-500" : "bg-blue-500"}`}
+                          style={{ width: `${c.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -412,8 +703,23 @@ function Usuario() {
   const [editUser, setEditUser]           = useState(null);
   const [rolDropdown, setRolDropdown]     = useState(false);
   const [pendingDevices, setPendingDevices] = useState([]);
+  const [drawerUser, setDrawerUser]         = useState(null);
+  const [desempeno, setDesempeno]           = useState(null);
+  const [loadingDesempeno, setLoadingDesempeno] = useState(false);
   const canManage = usePermission("canManageUsers");
   const canManageDevices = ["PROJECT_MANAGER", "RRHH"].includes(currentUser?.role);
+
+  const handleUserClick = async (u) => {
+    if (!canManageDevices) return;
+    setDrawerUser(u);
+    setDesempeno(null);
+    setLoadingDesempeno(true);
+    try {
+      const data = await apiGetUserDesempeno(u.id);
+      setDesempeno(data);
+    } catch { /* silencioso */ }
+    finally { setLoadingDesempeno(false); }
+  };
 
   useEffect(() => {
     apiGetUsers()
@@ -670,7 +976,9 @@ function Usuario() {
                   const status = getActivityStatus(u);
                   return (
                   <div key={u.id}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition group">
+                    onClick={() => handleUserClick(u)}
+                    className={`flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition group ${canManageDevices ? "cursor-pointer" : ""}`}
+                    title={canManageDevices ? "Ver desempeño" : undefined}>
                     {/* Avatar + online ring */}
                     <div className="relative shrink-0">
                       <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${ROL_AVATAR[u.role] || "from-gray-400 to-gray-600"} flex items-center justify-center text-sm font-bold text-white shadow-sm`}>
@@ -711,10 +1019,14 @@ function Usuario() {
 
                     {/* Edit button — visible on hover for managers */}
                     {canManage && (
-                      <button onClick={() => setEditUser(u)}
+                      <button onClick={e => { e.stopPropagation(); setEditUser(u); }}
                         className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-white/20 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition opacity-0 group-hover:opacity-100">
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
+                    )}
+                    {/* Flecha indicadora de que es clickeable */}
+                    {canManageDevices && (
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-300 dark:text-white/15 opacity-0 group-hover:opacity-100 transition shrink-0" />
                     )}
                   </div>
                   );
@@ -757,6 +1069,14 @@ function Usuario() {
           />
         )}
       </Modal>
+
+      {/* ── DRAWER DE DESEMPEÑO ── */}
+      <UserPerformanceDrawer
+        open={!!drawerUser}
+        onClose={() => { setDrawerUser(null); setDesempeno(null); }}
+        desempeno={desempeno}
+        loading={loadingDesempeno}
+      />
     </DashboardLayout>
   );
 }

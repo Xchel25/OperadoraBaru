@@ -53,6 +53,9 @@ export const apiUpdateUser = (id, data) =>
 export const apiDeleteUser = (id) =>
   api.delete(`/usuarios/${id}`).then((r) => r.data);
 
+export const apiGetUserDesempeno = (id) =>
+  api.get(`/usuarios/${id}/desempeno`).then((r) => r.data);
+
 // ─── CAPACITACIÓN ────────────────────────────────────────────────────────────
 
 export const apiGetCourses = () =>

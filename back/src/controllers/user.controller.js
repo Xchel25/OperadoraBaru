@@ -85,4 +85,34 @@ async function remove(req, res, next) {
   }
 }
 
-module.exports = { getAll, getById, create, update, remove };
+async function getDesempeno(req, res, next) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: {
+        id: true, name: true, email: true, role: true,
+        active: true, firstLogin: true, createdAt: true,
+        lastLoginAt: true, lastActivityAt: true,
+        progresses: {
+          include: {
+            course: {
+              select: { id: true, title: true, mandatory: true, category: true, active: true }
+            }
+          }
+        }
+      }
+    });
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    const allCourses = await prisma.course.findMany({
+      where: { active: true },
+      select: { id: true, title: true, mandatory: true, category: true }
+    });
+
+    res.json({ user, allCourses });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getAll, getById, create, update, remove, getDesempeno };
