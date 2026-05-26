@@ -9,7 +9,9 @@ import {
   FileText,
   Settings,
   HelpCircle,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from "lucide-react";
 import { botReply } from "../config/botKB";
 
@@ -42,6 +44,7 @@ function DashboardLayout({ children }) {
   const [activeSub, setActiveSub]   = useState(null);
   const [modalOpen, setModalOpen]   = useState(false);
   const [modalTitle, setModalTitle] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notices, setNotices]       = useState([]);
 
   const [chatMessages, setChatMessages] = useState([
@@ -121,9 +124,17 @@ function DashboardLayout({ children }) {
   return (
     <div className="h-screen flex bg-gray-100 dark:bg-[#0B0F1A]">
 
-      {/* SIDEBAR */}
+      {/* OVERLAY MÓVIL (fondo oscuro cuando menú abierto) */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* SIDEBAR — oculto en móvil, visible en md+ */}
       <aside className="
-        group flex flex-col justify-between
+        group flex-col justify-between
         w-20 hover:w-64
         transition-all duration-300
         backdrop-blur-xl
@@ -131,6 +142,7 @@ function DashboardLayout({ children }) {
         border-r border-white/20
         text-gray-800 dark:text-gray-200
         p-3
+        hidden md:flex
       ">
         {/* TOP */}
         <div>
@@ -195,10 +207,18 @@ function DashboardLayout({ children }) {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* TOP BAR */}
-        <header className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center px-6 py-4 gap-x-11 border-b border-gray-200 dark:border-gray-700">
+        <header className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] md:grid-cols-[minmax(0,1fr)_auto_auto] items-center px-3 md:px-6 py-3 md:py-4 gap-x-2 md:gap-x-11 border-b border-gray-200 dark:border-gray-700">
 
-          {/* IZQUIERDA → SUBMENU */}
-          <div className="flex gap-3 overflow-hidden min-w-0">
+          {/* HAMBURGUESA — solo en móvil */}
+          <button
+            className="md:hidden p-2 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
+          {/* IZQUIERDA → SUBMENU (solo desktop) */}
+          <div className="hidden md:flex gap-3 overflow-hidden min-w-0">
             {topbarEnabled && subMenu.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -231,6 +251,12 @@ function DashboardLayout({ children }) {
                 </button>
               );
             })}
+          </div>
+
+          {/* En móvil: logo centrado */}
+          <div className="flex md:hidden justify-center">
+            <img src={logoNegro}  className="h-7 block dark:hidden" />
+            <img src={logoBlanco} className="h-7 hidden dark:block" />
           </div>
 
           {/* 🔔 NOTIFICACIONES + 🤖 ASISTENTE */}
@@ -363,7 +389,7 @@ function DashboardLayout({ children }) {
         </header>
 
         {/* MAIN */}
-        <main className="flex-1 p-6 text-gray-900 dark:text-white dark:bg-[#0B0F1A] overflow-auto">
+        <main className="flex-1 p-3 md:p-6 pb-24 md:pb-6 text-gray-900 dark:text-white dark:bg-[#0B0F1A] overflow-auto">
           <Breadcrumbs />
           {children}
         </main>
@@ -411,6 +437,130 @@ function DashboardLayout({ children }) {
         )}
 
       </div>
+
+      {/* MENÚ LATERAL MÓVIL (slide-in desde la izquierda) */}
+      <div className={`
+        fixed top-0 left-0 h-full w-72 z-50
+        bg-white dark:bg-[#111827]
+        border-r border-gray-200 dark:border-white/10
+        flex flex-col
+        transition-transform duration-300
+        md:hidden
+        ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        {/* Header del menú */}
+        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-white/10">
+          <div className="flex items-center gap-3">
+            <img src={logoNegro}  className="h-8 block dark:hidden" />
+            <img src={logoBlanco} className="h-8 hidden dark:block" />
+          </div>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Links de navegación */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {menu.map((item) => (
+            <button
+              key={item.path}
+              onClick={() => { navigate(item.path); setMobileMenuOpen(false); }}
+              className={`
+                w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition
+                ${location.pathname === item.path
+                  ? "bg-blue-500 text-white"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+                }
+              `}
+            >
+              <span className="w-5 h-5 flex-shrink-0">{item.icon}</span>
+              <span className="text-sm font-medium">{item.name}</span>
+            </button>
+          ))}
+
+          {canSeeConfig && (
+            <button
+              onClick={() => { navigate("/configuracion"); setMobileMenuOpen(false); }}
+              className={`
+                w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition
+                ${location.pathname === "/configuracion"
+                  ? "bg-blue-500 text-white"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+                }
+              `}
+            >
+              <Settings className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm font-medium">{t("nav_config")}</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => { navigate("/ayuda"); setMobileMenuOpen(false); }}
+            className={`
+              w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition
+              ${location.pathname === "/ayuda"
+                ? "bg-blue-500 text-white"
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+              }
+            `}
+          >
+            <HelpCircle className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm font-medium">{t("nav_ayuda")}</span>
+          </button>
+        </nav>
+
+        {/* Footer: info usuario + logout */}
+        <div className="px-3 py-4 border-t border-gray-200 dark:border-white/10">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5">
+            <div className="w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+              {userInitials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 dark:text-white truncate">{user?.name || "Usuario"}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email || ""}</p>
+            </div>
+            <button
+              onClick={() => { logout(); setMobileMenuOpen(false); }}
+              className="p-2 rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 transition flex-shrink-0"
+              title="Cerrar sesión"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* BARRA DE NAVEGACIÓN INFERIOR — solo móvil */}
+      <nav className="fixed bottom-0 left-0 right-0 z-30 md:hidden
+        bg-white/90 dark:bg-[#111827]/95 backdrop-blur-xl
+        border-t border-gray-200 dark:border-white/10
+        flex items-center justify-around px-2 py-2
+      ">
+        {menu.slice(0, 5).map((item) => (
+          <button
+            key={item.path}
+            onClick={() => navigate(item.path)}
+            className={`
+              flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-all min-w-0
+              ${location.pathname === item.path
+                ? "text-blue-500"
+                : "text-gray-400 dark:text-gray-500"
+              }
+            `}
+          >
+            <span className={`w-5 h-5 flex-shrink-0 transition-transform ${location.pathname === item.path ? "scale-110" : ""}`}>
+              {item.icon}
+            </span>
+            <span className="text-[10px] leading-none truncate max-w-[52px] text-center">
+              {item.name}
+            </span>
+          </button>
+        ))}
+      </nav>
+
     </div>
   );
 }
