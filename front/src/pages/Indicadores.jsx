@@ -541,10 +541,10 @@ function Indicadores() {
       <div className="space-y-6">
 
         {/* HEADER */}
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("ind_title")}</h1>
-            <div className="flex items-center gap-3 mt-1 text-xs text-gray-400 dark:text-white/40">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t("ind_title")}</h1>
+            <div className="flex flex-wrap items-center gap-3 mt-1 text-xs text-gray-400 dark:text-white/40">
               <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {periodo}</span>
               {ultimaActualizacion && (
                 <span className="flex items-center gap-1.5"><RefreshCw className="w-3.5 h-3.5" /> {ultimaActualizacion}</span>
@@ -554,7 +554,7 @@ function Indicadores() {
           {canEdit && (
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition shadow-lg shadow-blue-500/30"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition shadow-lg shadow-blue-500/30 sm:shrink-0"
             >
               <Plus className="w-4 h-4" />
               {indicadores.length > 0 ? "Actualizar indicador" : "Registrar indicador"}
@@ -575,7 +575,7 @@ function Indicadores() {
           </div>
         ) : (
           <div className="bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 p-5">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               {/* Circular global score */}
               <div className="relative shrink-0">
                 <svg width="96" height="96" viewBox="0 0 96 96">
@@ -648,8 +648,12 @@ function Indicadores() {
           </div>
         )}
 
-        {/* GRÁFICO DE BARRAS DIVERGENTES */}
-        {!loading && ejes.length > 0 && <DivergingChart ejes={ejes} />}
+        {/* GRÁFICO DE BARRAS DIVERGENTES — solo escritorio */}
+        {!loading && ejes.length > 0 && (
+          <div className="hidden sm:block">
+            <DivergingChart ejes={ejes} />
+          </div>
+        )}
 
         {/* TARJETAS POR EJE */}
         {!loading && ejes.length > 0 && (

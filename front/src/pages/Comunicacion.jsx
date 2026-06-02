@@ -516,15 +516,15 @@ function Comunicacion() {
       <div className="space-y-7">
 
         {/* HEADER */}
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("com_title")}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t("com_title")}</h1>
             <p className="text-sm text-gray-400 dark:text-white/40 mt-1">{t("com_sub")}</p>
           </div>
           {canCreate && (
             <button
               onClick={() => setNoticeModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition shadow-lg shadow-blue-500/30"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition shadow-lg shadow-blue-500/30 sm:shrink-0"
             >
               <Plus className="w-4 h-4" /> Nuevo aviso
             </button>
@@ -704,7 +704,7 @@ function Comunicacion() {
 
         {/* VIDEOS RSE */}
         <div>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
             <div>
               <h2 className="font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                 <Video className="w-4 h-4 text-gray-400 dark:text-white/40" />
@@ -715,7 +715,7 @@ function Comunicacion() {
             {canCreate && (
               <button
                 onClick={() => setVideoModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-white/10 text-sm text-gray-600 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-white/8 transition"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 dark:border-white/10 text-sm text-gray-600 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-white/8 transition sm:shrink-0"
               >
                 <Plus className="w-3.5 h-3.5" /> Agregar video
               </button>
