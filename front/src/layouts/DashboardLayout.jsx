@@ -429,7 +429,11 @@ function DashboardLayout({ children }) {
         border-t border-gray-200 dark:border-white/10
         flex items-center overflow-x-auto scrollbar-hide px-1 py-2
       ">
-        {menu.map((item) => (
+        {[
+          ...menu,
+          ...(canSeeConfig ? [{ name: t("nav_config"), icon: <Settings />, path: "/configuracion" }] : []),
+          { name: t("nav_ayuda"), icon: <HelpCircle />, path: "/ayuda" },
+        ].map((item) => (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}

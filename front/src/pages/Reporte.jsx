@@ -479,7 +479,7 @@ function Reporte() {
                   className={`px-2.5 py-1 rounded-full text-xs font-medium transition ${
                     filterMod === f
                       ? "bg-blue-500 text-white"
-                      : "bg-gray-100 dark:bg-white/8 text-gray-500 dark:text-white/40 hover:bg-gray-200 dark:hover:bg-white/15"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }`}
                 >
                   {f === "todos" ? "Todos" : f.split(" ")[0]}
