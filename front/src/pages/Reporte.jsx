@@ -397,13 +397,12 @@ function Reporte() {
       <div className="space-y-6">
 
         {/* HEADER */}
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("rep_title")}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t("rep_title")}</h1>
             <p className="text-sm text-gray-400 dark:text-white/40 mt-1">{t("rep_sub")}</p>
           </div>
-          {/* Role badge */}
-          <div className="text-right">
+          <div className="sm:text-right shrink-0">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-600 dark:text-white/60">
               <User className="w-3.5 h-3.5" />
               {ROLE_LABELS[user?.role] || user?.role}
@@ -434,8 +433,12 @@ function Reporte() {
           ))}
         </div>
 
-        {/* DIVERGING CHART */}
-        {!loading && <ReportDivergingChart reportes={reportes} modules={MODULES} />}
+        {/* DIVERGING CHART — solo escritorio */}
+        {!loading && (
+          <div className="hidden sm:block">
+            <ReportDivergingChart reportes={reportes} modules={MODULES} />
+          </div>
+        )}
 
         {/* MODULE CARDS */}
         {canCreate && (
@@ -462,8 +465,8 @@ function Reporte() {
 
         {/* HISTORIAL */}
         <div className="bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h2 className="font-semibold text-gray-800 dark:text-white flex items-center gap-2 shrink-0">
               <Clock className="w-4 h-4 text-gray-400 dark:text-white/40" />
               Historial de exportaciones
             </h2>

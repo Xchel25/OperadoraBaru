@@ -155,7 +155,7 @@ function SectionCard({ icon: IconEl, iconBg, iconColor, title, subtitle, childre
 
 function Toast({ msg }) {
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium px-4 py-3 rounded-xl shadow-xl">
+    <div className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium px-4 py-3 rounded-xl shadow-xl">
       <CheckCircle className="w-4 h-4 text-emerald-400 dark:text-emerald-600 shrink-0" />
       {msg}
     </div>
