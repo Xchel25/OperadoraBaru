@@ -32,8 +32,8 @@ function Recuperar() {
 
   return (
     <AuthLayout>
-      <div className="w-96 p-8 pt-10 rounded-2xl 
-        bg-white dark:bg-[#111827] 
+      <div className="w-full max-w-sm p-6 pt-8 sm:p-8 sm:pt-10 rounded-2xl
+        bg-white dark:bg-[#111827]
         shadow-2xl border border-gray-200 dark:border-gray-700">
 
         {/* Header */}
