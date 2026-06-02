@@ -227,16 +227,16 @@ function Dashboard() {
       <div className="space-y-7">
 
         {/* BIENVENIDA */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               {saludo}, {firstName}
             </h1>
-            <p className="text-sm text-gray-400 dark:text-white/40 mt-1">
-              {new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            <p className="text-xs sm:text-sm text-gray-400 dark:text-white/40 mt-1 capitalize">
+              {new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long" })}
             </p>
           </div>
-          <span className="text-xs px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 font-medium">
+          <span className="text-xs px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 font-medium shrink-0">
             {ROLE_LABELS[user?.role] || user?.role}
           </span>
         </div>
@@ -321,7 +321,7 @@ function Dashboard() {
               <p className="text-xs mt-1 opacity-70">Los indicadores se registran desde la página Indicadores RSE</p>
             </div>
           ) : (
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
               {indicadores.map((ind, i) => {
                 const style = EJE_STYLE[ind.category] || EJE_STYLE["Gobernanza"];
                 const pct = Math.round(ind.value);

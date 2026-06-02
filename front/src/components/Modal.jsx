@@ -13,7 +13,7 @@ function Modal({ open, onClose, title, children }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-6">
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-3 sm:p-6">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-md"
         onClick={onClose}
@@ -24,7 +24,7 @@ function Modal({ open, onClose, title, children }) {
         border border-gray-200 dark:border-white/10
         shadow-2xl
       ">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/10">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-white/10">
           <h2 className="text-base font-semibold text-gray-900 dark:text-white">{title}</h2>
           <button
             onClick={onClose}
@@ -33,7 +33,7 @@ function Modal({ open, onClose, title, children }) {
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="p-6 overflow-y-auto max-h-[70vh]">
+        <div className="p-4 sm:p-6 overflow-y-auto max-h-[75vh]">
           {children}
         </div>
       </div>

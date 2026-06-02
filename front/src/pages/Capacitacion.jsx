@@ -858,14 +858,14 @@ function Capacitacion() {
       <div className="space-y-7">
 
         {/* HEADER */}
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("cap_title")}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t("cap_title")}</h1>
             <p className="text-sm text-gray-400 dark:text-white/40 mt-1">{t("cap_sub")}</p>
           </div>
           {canCreate && (
             <button onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition shadow-lg shadow-blue-500/30">
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition shadow-lg shadow-blue-500/30 sm:shrink-0">
               <Plus className="w-4 h-4" /> Nuevo curso
             </button>
           )}
@@ -877,7 +877,7 @@ function Capacitacion() {
             { label: "Disponibles", value: cursosVisibles.length || "—", icon: BookOpen,     bg: "bg-blue-50 dark:bg-blue-500/10",   text: "text-blue-600 dark:text-blue-400",   border: "border-blue-100 dark:border-blue-500/20" },
             { label: "Completados", value: completados,                  icon: CheckCircle,  bg: "bg-green-50 dark:bg-green-500/10", text: "text-green-600 dark:text-green-400", border: "border-green-100 dark:border-green-500/20" },
             { label: "En progreso", value: enProgreso,                   icon: Clock,        bg: "bg-violet-50 dark:bg-violet-500/10",text:"text-violet-600 dark:text-violet-400",border:"border-violet-100 dark:border-violet-500/20"},
-            { label: "Obligatorios pendientes", value: obligatoriosPend || "—", icon: Award, bg: "bg-amber-50 dark:bg-amber-500/10",text: "text-amber-600 dark:text-amber-400",  border: "border-amber-100 dark:border-amber-500/20" },
+            { label: "Oblig. pendientes", value: obligatoriosPend || "—", icon: Award, bg: "bg-amber-50 dark:bg-amber-500/10",text: "text-amber-600 dark:text-amber-400",  border: "border-amber-100 dark:border-amber-500/20" },
           ].map((s, i) => (
             <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl border ${s.border} ${s.bg}`}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-white/10 shrink-0 shadow-sm">
@@ -938,7 +938,7 @@ function Capacitacion() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {[1,2,3,4,5,6].map(i => <div key={i} className="h-56 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse" />)}
             </div>
           ) : cursosFiltered.length === 0 ? (
