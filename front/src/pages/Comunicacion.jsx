@@ -708,7 +708,7 @@ function Comunicacion() {
             <div>
               <h2 className="font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                 <Video className="w-4 h-4 text-gray-400 dark:text-white/40" />
-                Videos RSE
+                Videos de Sostenibilidad
               </h2>
               <p className="text-xs text-gray-400 dark:text-white/30 mt-0.5">Contenido audiovisual de responsabilidad social</p>
             </div>
@@ -729,7 +729,7 @@ function Comunicacion() {
           ) : videos.length === 0 ? (
             <div className="text-center py-12 text-gray-400 dark:text-white/30 border-2 border-dashed border-gray-100 dark:border-white/10 rounded-2xl">
               <Video className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm font-medium">Sin videos RSE publicados</p>
+              <p className="text-sm font-medium">Sin videos de Sostenibilidad publicados</p>
               {canCreate && (
                 <p className="text-xs mt-1">Agrega un enlace de YouTube/Vimeo o sube un video desde tu computadora</p>
               )}
@@ -801,7 +801,7 @@ function Comunicacion() {
         />
       </Modal>
 
-      <Modal open={videoModalOpen} onClose={() => setVideoModalOpen(false)} title="Agregar video RSE">
+      <Modal open={videoModalOpen} onClose={() => setVideoModalOpen(false)} title="Agregar video de Sostenibilidad">
         <VideoForm
           onSave={video => setVideos(prev => [video, ...prev])}
           onClose={() => setVideoModalOpen(false)}

@@ -29,7 +29,7 @@ const sidebarConfig = {
   "/comunicacion": [
     { label: "Avisos", icon: Bell },
     { label: "Documentos", icon: FileText },
-    { label: "Videos RSE", icon: Activity },
+    { label: "Videos de Sostenibilidad", icon: Activity },
   ],
 
   "/indicadores": [

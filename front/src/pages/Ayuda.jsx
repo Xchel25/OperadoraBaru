@@ -34,7 +34,7 @@ const ROLE_CAPABILITIES = {
       "Crear, editar y eliminar cursos de capacitación",
       "Publicar y eliminar avisos institucionales",
       "Subir y eliminar documentos",
-      "Actualizar indicadores RSE",
+      "Actualizar indicadores de Sostenibilidad",
       "Ver y exportar todos los reportes",
       "Acceder a Configuración del sistema",
     ],
@@ -45,7 +45,7 @@ const ROLE_CAPABILITIES = {
       "Crear y editar cursos de capacitación",
       "Publicar avisos institucionales",
       "Subir documentos",
-      "Actualizar indicadores RSE",
+      "Actualizar indicadores de Sostenibilidad",
       "Ver y exportar reportes",
       "Ver lista de usuarios",
     ],
@@ -63,7 +63,7 @@ const ROLE_CAPABILITIES = {
     ],
     noTiene: [
       "Crear cursos o avisos",
-      "Editar indicadores RSE",
+      "Editar indicadores de Sostenibilidad",
       "Acceder a Configuración",
     ],
   },
@@ -76,7 +76,7 @@ const ROLE_CAPABILITIES = {
     noTiene: [
       "Crear o gestionar usuarios",
       "Crear cursos de capacitación",
-      "Editar indicadores RSE",
+      "Editar indicadores de Sostenibilidad",
       "Ver reportes",
       "Acceder a Configuración",
     ],
@@ -85,7 +85,7 @@ const ROLE_CAPABILITIES = {
     puede: [
       "Ver cursos asignados y registrar mi progreso",
       "Ver avisos y descargar documentos",
-      "Consultar indicadores RSE",
+      "Consultar indicadores de Sostenibilidad",
     ],
     noTiene: [
       "Crear o modificar cualquier contenido",
@@ -101,7 +101,7 @@ const PERMISOS_TABLA = [
   { accion: "Crear cursos",            pm: true,  aa: true,  rr: false, co: false, cb: false },
   { accion: "Eliminar cursos",         pm: true,  aa: false, rr: false, co: false, cb: false },
   { accion: "Publicar avisos",         pm: true,  aa: true,  rr: false, co: true,  cb: false },
-  { accion: "Editar indicadores RSE",  pm: true,  aa: true,  rr: false, co: false, cb: false },
+  { accion: "Editar indicadores de Sostenibilidad",  pm: true,  aa: true,  rr: false, co: false, cb: false },
   { accion: "Ver y exportar reportes", pm: true,  aa: true,  rr: true,  co: false, cb: false },
   { accion: "Configuración",           pm: true,  aa: false, rr: false, co: false, cb: false },
 ];
@@ -128,8 +128,8 @@ const FAQS = [
   { cat: "comunicacion", pregunta: "¿Cómo descargo un documento del área?",            respuesta: "En Comunicación → pestaña Documentos, haz clic en el botón de descarga junto al archivo que necesitas. El archivo se abre en una nueva pestaña para que puedas guardarlo." },
   { cat: "comunicacion", pregunta: "¿Qué son los avisos urgentes?",                    respuesta: "Los avisos marcados como urgentes aparecen con un punto rojo en la campana del topbar y se destacan visualmente al tope de la lista de avisos. Son comunicaciones de atención inmediata." },
   { cat: "indicadores",  pregunta: "¿Qué significan los colores en Indicadores?",      respuesta: "🟢 Óptimo = 70% o más · 🟡 En progreso = 40–69% · 🔴 En riesgo = menos del 40%. Presiona el ícono ℹ en cada eje para ver qué métricas lo componen y su detalle." },
-  { cat: "indicadores",  pregunta: "¿Cada cuánto se actualizan los indicadores RSE?",  respuesta: "Los indicadores RSE se actualizan trimestralmente por el equipo de Project Management o Admin de Área. Verás la fecha de última actualización en el panel superior de la página." },
-  { cat: "indicadores",  pregunta: "¿Qué son los 5 ejes RSE de Operadora Barú?",       respuesta: "Los 5 ejes de sostenibilidad son: Gobernanza (cumplimiento y ética), Clientes (NPS y satisfacción), Comunidad (proyectos sociales), Trabajadores (clima laboral) y Medio Ambiente (huella ecológica). Cada eje agrupa métricas específicas." },
+  { cat: "indicadores",  pregunta: "¿Cada cuánto se actualizan los indicadores de Sostenibilidad?",  respuesta: "Los indicadores de Sostenibilidad se actualizan trimestralmente por el equipo de Project Management o Admin de Área. Verás la fecha de última actualización en el panel superior de la página." },
+  { cat: "indicadores",  pregunta: "¿Qué son los 5 ejes de Sostenibilidad de Operadora Barú?",       respuesta: "Los 5 ejes de sostenibilidad son: Gobernanza (cumplimiento y ética), Clientes (NPS y satisfacción), Comunidad (proyectos sociales), Trabajadores (clima laboral) y Medio Ambiente (huella ecológica). Cada eje agrupa métricas específicas." },
 ];
 
 const CATS = [
@@ -145,7 +145,7 @@ const TEMAS = [
   { id: "inicio",       icon: Book,          titulo: "Guía de inicio",  desc: "Primeros pasos en la plataforma",   color: "from-blue-500 to-blue-700",   items: ["Cambiar contraseña", "Entender tu rol", "Activar notificaciones", "Cambiar idioma"] },
   { id: "capacitacion", icon: Video,         titulo: "Capacitación",    desc: "Cómo usar el módulo de cursos",     color: "from-violet-500 to-violet-700",items: ["Ver mis cursos asignados", "Ver video del curso", "Registrar mi progreso", "Descargar material"] },
   { id: "comunicacion", icon: MessageCircle, titulo: "Comunicación",    desc: "Avisos, documentos y videos",       color: "from-green-500 to-green-700",  items: ["Ver avisos institucionales", "Descargar documentos", "Avisos urgentes"] },
-  { id: "indicadores",  icon: HelpCircle,    titulo: "Indicadores",     desc: "Módulo de sostenibilidad RSE",      color: "from-amber-500 to-amber-700",  items: ["Entender los 5 ejes", "Semáforo verde/amarillo/rojo", "Ver tendencia histórica"] },
+  { id: "indicadores",  icon: HelpCircle,    titulo: "Indicadores",     desc: "Módulo de Sostenibilidad",      color: "from-amber-500 to-amber-700",  items: ["Entender los 5 ejes", "Semáforo verde/amarillo/rojo", "Ver tendencia histórica"] },
 ];
 
 /* ─── Quick replies para el chatbot ─────────────────────────────── */

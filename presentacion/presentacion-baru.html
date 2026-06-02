@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operadora Barú</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body { font-family: 'Inter', sans-serif; background: #e2e8f0; }
+
+  @media print {
+    body { background: white; }
+    .page { page-break-after: always; box-shadow: none !important; margin: 0 !important; border-radius: 0 !important; }
+    .page:last-child { page-break-after: avoid; }
+    .no-print { display: none !important; }
+  }
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 99;
+    background: white; border-bottom: 1px solid #e2e8f0;
+    padding: 10px 28px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar span { font-weight: 700; font-size: 13px; color: #16a34a; }
+  .btn { background: #16a34a; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 68px 20px 40px; display: flex; flex-direction: column; gap: 24px; }
+
+  .page { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,.10); overflow: hidden; }
+
+  /* ── PÁGINA 1: PORTADA ── */
+  .cover {
+    background: linear-gradient(150deg, #064e3b 0%, #065f46 45%, #059669 100%);
+    color: white; min-height: 520px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 60px 48px;
+  }
+  .cover-tag { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #6ee7b7; margin-bottom: 22px; }
+  .cover-icon { font-size: 56px; margin-bottom: 22px; }
+  .cover-title { font-size: 48px; font-weight: 900; line-height: 1.08; margin-bottom: 16px; }
+  .cover-sub { font-size: 17px; color: #a7f3d0; max-width: 480px; line-height: 1.6; margin-bottom: 40px; }
+  .cover-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.3);
+    border-radius: 10px; padding: 14px 32px; font-size: 17px; font-weight: 700;
+    color: white; text-decoration: none;
+  }
+  .cover-date { margin-top: 40px; font-size: 13px; color: #6ee7b7; }
+
+  /* ── PÁGINA 2: CREDENCIALES ── */
+  .p-head { padding: 30px 36px 0; border-bottom: 1px solid #f1f5f9; padding-bottom: 22px; }
+  .p-title { font-size: 22px; font-weight: 800; color: #0f172a; }
+  .p-sub { font-size: 13px; color: #64748b; margin-top: 4px; }
+  .p-body { padding: 24px 36px 32px; }
+
+  .url-bar {
+    background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px;
+    padding: 14px 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 22px;
+  }
+  .url-bar-url { font-size: 18px; font-weight: 800; color: #064e3b; font-family: monospace; }
+  .url-bar-note { font-size: 12px; color: #16a34a; margin-top: 2px; }
+
+  table.creds { width: 100%; border-collapse: separate; border-spacing: 0; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+  table.creds th { background: #f8fafc; padding: 12px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; text-align: left; border-bottom: 1.5px solid #e2e8f0; }
+  table.creds td { padding: 13px 16px; font-size: 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  table.creds tr:last-child td { border-bottom: none; background: #f0fdf4; }
+
+  .av { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; color: white; margin-right: 10px; vertical-align: middle; }
+  .av-g { background: #059669; } .av-p { background: #db2777; } .av-b { background: #1d4ed8; } .av-v { background: #7c3aed; } .av-y { background: #d97706; }
+  .mono { font-family: monospace; font-weight: 700; font-size: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 10px; display: inline-block; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .b-g { background: #dcfce7; color: #15803d; } .b-p { background: #fce7f3; color: #9d174d; }
+  .b-b { background: #dbeafe; color: #1d4ed8; } .b-v { background: #f3e8ff; color: #6d28d9; }
+  .b-y { background: #fef9c3; color: #854d0e; }
+
+  .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 11px 16px; font-size: 13px; color: #92400e; margin-top: 16px; }
+
+  /* ── PÁGINA 3: COSTOS ── */
+  .plans { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  .plan { border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+  .plan-top { padding: 20px 18px; text-align: center; }
+  .plan-num { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+  .plan-price { font-size: 38px; font-weight: 900; line-height: 1; }
+  .plan-mo { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .plan-extra { font-size: 12px; font-weight: 600; margin-top: 10px; line-height: 1.8; }
+  .plan-hr { height: 1px; background: #e2e8f0; }
+  .plan-list { padding: 14px 16px; }
+  .pl { display: flex; gap: 7px; font-size: 13px; color: #334155; margin-bottom: 8px; line-height: 1.4; }
+  .pl:last-child { margin-bottom: 0; }
+
+  .p1 { border-color: #86efac; }
+  .p1 .plan-top { background: linear-gradient(135deg,#f0fdf4,#dcfce7); }
+  .p1 .plan-num { color: #15803d; }
+  .p1 .plan-price { color: #15803d; }
+  .p1 .plan-extra { color: #15803d; }
+
+  .p2 { border-color: #93c5fd; border-width: 3px; }
+  .p2 .plan-top { background: linear-gradient(135deg,#eff6ff,#dbeafe); }
+  .p2 .plan-num { color: #1d4ed8; }
+  .p2 .plan-price { color: #1d4ed8; }
+  .p2 .plan-extra { color: #1d4ed8; }
+
+  .p3 { border-color: #c4b5fd; }
+  .p3 .plan-top { background: linear-gradient(135deg,#fdf4ff,#f3e8ff); }
+  .p3 .plan-num { color: #6d28d9; }
+  .p3 .plan-price { color: #6d28d9; }
+  .p3 .plan-extra { color: #6d28d9; }
+
+  .comp { border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+  table.ct { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.ct th { background: #f8fafc; padding: 11px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #64748b; border-bottom: 1.5px solid #e2e8f0; text-align: center; }
+  table.ct th:first-child { text-align: left; }
+  table.ct td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; text-align: center; color: #475569; }
+  table.ct td:first-child { text-align: left; font-weight: 600; color: #0f172a; }
+  table.ct tr:last-child td { border-bottom: none; font-weight: 700; font-size: 14px; }
+  .y { color: #16a34a; } .n { color: #cbd5e1; }
+  .c1 { color: #15803d !important; } .c2 { color: #1d4ed8 !important; } .c3 { color: #6d28d9 !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar no-print">
+  <span>🌿 Operadora Barú</span>
+  <button class="btn" onclick="window.print()">🖨️ Exportar PDF</button>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════ PÁGINA 1 — PORTADA ══════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-tag">Operadora Barú · Mayo 2026</div>
+    <div class="cover-icon">🌿</div>
+    <div class="cover-title">Sistema RSE<br/>Operadora Barú</div>
+    <div class="cover-sub">Plataforma digital de Responsabilidad Social Empresarial para la gestión interna de empleados</div>
+    <a class="cover-link" href="https://operadora-baru.vercel.app" target="_blank">
+      🌐 &nbsp;operadora-baru.vercel.app
+    </a>
+    <div class="cover-date">Presentación confidencial · 25 de mayo de 2026</div>
+  </div>
+</div>
+
+
+<!-- ══════════ PÁGINA 2 — CREDENCIALES ══════════ -->
+<div class="page">
+  <div class="p-head">
+    <div class="p-title">🔑 Accesos</div>
+    <div class="p-sub">Ingresar en: <strong>operadora-baru.vercel.app</strong> — desde celular o computadora</div>
+  </div>
+  <div class="p-body">
+
+    <table class="creds">
+      <thead>
+        <tr>
+          <th>Persona</th>
+          <th>Email</th>
+          <th>Contraseña temporal</th>
+          <th>Rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="av av-g">R1</span>Revisor 1</td>
+          <td><span class="mono">revisor1@operadorabaru.com</span></td>
+          <td><span class="mono">bde68ea64504</span></td>
+          <td><span class="badge b-g">Colaborador</span></td>
+        </tr>
+        <tr>
+          <td><span class="av av-g">R2</span>Revisor 2</td>
+          <td><span class="mono">revisor2@operadorabaru.com</span></td>
+          <td><span class="mono">04ac6e53675f</span></td>
+          <td><span class="badge b-g">Colaborador</span></td>
+        </tr>
+        <tr>
+          <td><span class="av av-p">R3</span>Revisor 3</td>
+          <td><span class="mono">revisor3@operadorabaru.com</span></td>
+          <td><span class="mono">9555d00e5ce4</span></td>
+          <td><span class="badge b-p">RRHH</span></td>
+        </tr>
+        <tr>
+          <td><span class="av av-b">R4</span>Revisor 4</td>
+          <td><span class="mono">revisor4@operadorabaru.com</span></td>
+          <td><span class="mono">b3a643c2aab1</span></td>
+          <td><span class="badge b-b">Admin Área</span></td>
+        </tr>
+        <tr>
+          <td><span class="av av-v">R5</span>Revisor 5</td>
+          <td><span class="mono">revisor5@operadorabaru.com</span></td>
+          <td><span class="mono">8ca423587cf4</span></td>
+          <td><span class="badge b-v">Comunicación</span></td>
+        </tr>
+        <tr>
+          <td><span class="av av-y">👑</span>Tú (admin)</td>
+          <td><span class="mono">admin@operadorabaru.com</span></td>
+          <td><span class="mono">Admin2026!</span></td>
+          <td><span class="badge b-y">Project Manager</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">⚠️ Las contraseñas de los revisores son <strong>temporales</strong> — al primer ingreso el sistema pide crear una contraseña personal.</div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ PÁGINA 3 — COSTOS ══════════ -->
+<div class="page">
+  <div class="p-head">
+    <div class="p-title">💰 Propuesta de costos — Producción real</div>
+    <div class="p-sub">Para ~150 empleados · Precios 2026 · Tipo de cambio $20 MXN / USD</div>
+  </div>
+  <div class="p-body">
+
+    <div class="plans">
+
+      <!-- OPCIÓN 1 -->
+      <div class="plan p1">
+        <div class="plan-top">
+          <div class="plan-num">🌱 Opción 1</div>
+          <div class="plan-price">$718</div>
+          <div class="plan-mo">MXN / mes &nbsp;·&nbsp; ~$35 USD</div>
+          <div class="plan-extra">
+            6 meses: $4,308 MXN<br/>
+            Anual: $8,616 MXN
+          </div>
+        </div>
+        <div class="plan-hr"></div>
+        <div class="plan-list">
+          <div class="pl">✅ Dominio .com.mx propio</div>
+          <div class="pl">✅ Frontend Vercel (gratis)</div>
+          <div class="pl">✅ Backend Railway $5 USD/mes</div>
+          <div class="pl">✅ Base de datos incluida</div>
+          <div class="pl">✅ Archivos en Cloudflare R2</div>
+          <div class="pl">✅ HTTPS automático</div>
+          <div class="pl">⚠️ ~50 usuarios simultáneos</div>
+          <div class="pl">⚠️ Sin uptime garantizado</div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN 2 -->
+      <div class="plan p2">
+        <div class="plan-top">
+          <div class="plan-num">🚀 Opción 2 &nbsp;⭐</div>
+          <div class="plan-price">$770</div>
+          <div class="plan-mo">MXN / mes &nbsp;·&nbsp; ~$38.50 USD</div>
+          <div class="plan-extra">
+            6 meses: $4,620 MXN<br/>
+            Anual: $9,240 MXN
+          </div>
+        </div>
+        <div class="plan-hr"></div>
+        <div class="plan-list">
+          <div class="pl">✅ Dominio .com.mx propio</div>
+          <div class="pl">✅ Vercel Pro ($20 USD/mes)</div>
+          <div class="pl">✅ Railway Pro ($20 USD/mes)</div>
+          <div class="pl">✅ $20 USD de crédito incluido</div>
+          <div class="pl">✅ Archivos permanentes (R2)</div>
+          <div class="pl">✅ 150+ usuarios simultáneos</div>
+          <div class="pl">✅ Uptime 99.9% garantizado</div>
+          <div class="pl">✅ Soporte prioritario</div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN 3 -->
+      <div class="plan p3">
+        <div class="plan-top">
+          <div class="plan-num">🏢 Opción 3</div>
+          <div class="plan-price">$1,575</div>
+          <div class="plan-mo">MXN / mes &nbsp;·&nbsp; ~$78.75 USD</div>
+          <div class="plan-extra">
+            6 meses: $9,450 MXN<br/>
+            Anual: $18,900 MXN
+          </div>
+        </div>
+        <div class="plan-hr"></div>
+        <div class="plan-list">
+          <div class="pl">✅ Dominio .com.mx propio</div>
+          <div class="pl">✅ Vercel Pro + CDN premium</div>
+          <div class="pl">✅ DigitalOcean 4 GB RAM dedicado</div>
+          <div class="pl">✅ PostgreSQL gestionado + backups diarios</div>
+          <div class="pl">✅ Archivos permanentes 10 GB+</div>
+          <div class="pl">✅ 500+ usuarios simultáneos</div>
+          <div class="pl">✅ SLA 99.99% — Soporte 24/7</div>
+          <div class="pl">✅ Email transaccional incluido</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABLA COMPARATIVA -->
+    <div class="comp">
+      <table class="ct">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Gratis (hoy)</th>
+            <th class="c1">🌱 Opción 1</th>
+            <th class="c2">🚀 Opción 2 ⭐</th>
+            <th class="c3">🏢 Opción 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Usuarios simultáneos</td>
+            <td>~30–50</td>
+            <td>~50</td>
+            <td><strong>150+</strong></td>
+            <td><strong>500+</strong></td>
+          </tr>
+          <tr>
+            <td>Uptime garantizado</td>
+            <td>~80%</td>
+            <td>~90%</td>
+            <td class="y">✅ 99.9%</td>
+            <td class="y">✅ 99.99%</td>
+          </tr>
+          <tr>
+            <td>Dominio propio</td>
+            <td class="n">❌</td>
+            <td class="y">✅</td>
+            <td class="y">✅</td>
+            <td class="y">✅</td>
+          </tr>
+          <tr>
+            <td>Archivos permanentes</td>
+            <td class="n">❌</td>
+            <td class="y">✅</td>
+            <td class="y">✅</td>
+            <td class="y">✅</td>
+          </tr>
+          <tr>
+            <td>Backups de base de datos</td>
+            <td class="n">❌</td>
+            <td class="n">❌</td>
+            <td class="y">✅</td>
+            <td class="y">✅ Diarios</td>
+          </tr>
+          <tr>
+            <td>Soporte técnico</td>
+            <td class="n">❌</td>
+            <td>Comunidad</td>
+            <td>Prioritario</td>
+            <td class="y">✅ 24/7</td>
+          </tr>
+          <tr>
+            <td>Costo mensual</td>
+            <td>$0 <small style="color:#94a3b8">(limitado)</small></td>
+            <td class="c1">$718 MXN</td>
+            <td class="c2">$770 MXN ⭐</td>
+            <td class="c3">$1,575 MXN</td>
+          </tr>
+          <tr>
+            <td>Costo anual</td>
+            <td>—</td>
+            <td class="c1">$8,616 MXN</td>
+            <td class="c2">$9,240 MXN</td>
+            <td class="c3">$18,900 MXN</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>

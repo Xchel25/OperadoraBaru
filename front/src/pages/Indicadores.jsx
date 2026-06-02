@@ -391,7 +391,7 @@ function IndicadorForm({ indicadores, onSave, onClose }) {
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-white/70 block mb-1">Eje RSE</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-white/70 block mb-1">Eje de Sostenibilidad</label>
         <div className="grid grid-cols-1 gap-2">
           {EJE_CATEGORIES.map(cat => {
             const c = EJE_CONFIG[cat] || {};
@@ -605,7 +605,7 @@ function Indicadores() {
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-bold text-gray-800 dark:text-white">Índice RSE Global</h2>
+                  <h2 className="font-bold text-gray-800 dark:text-white">Índice de Sostenibilidad Global</h2>
                   <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${semGlobal.bg} ${semGlobal.text} ${semGlobal.border}`}>
                     {semGlobal.dot} {semGlobal.label}
                   </span>
@@ -685,7 +685,7 @@ function Indicadores() {
 
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Registrar indicador RSE">
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Registrar indicador de Sostenibilidad">
         <IndicadorForm
           indicadores={indicadores}
           onSave={(r) => { handleSave(r); setModalOpen(false); }}

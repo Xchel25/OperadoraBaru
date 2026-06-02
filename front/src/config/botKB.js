@@ -5,11 +5,11 @@ const KB = [
 
   /* ── Plataforma general ─────────────────────────────────────── */
   { keys: ["qué es", "para qué sirve", "funcionalidades", "cómo funciona", "plataforma", "sistema"],
-    resp: "La plataforma Operadora Barú tiene 5 módulos: 📚 Capacitación (cursos y formación), 📣 Comunicación (avisos y documentos), 📊 Indicadores RSE (sostenibilidad), 📈 Reportes y 👤 Usuarios. Lo que puedes ver depende de tu rol asignado." },
+    resp: "La plataforma Operadora Barú tiene 5 módulos: 📚 Capacitación (cursos y formación), 📣 Comunicación (avisos y documentos), 📊 Indicadores de Sostenibilidad (sostenibilidad), 📈 Reportes y 👤 Usuarios. Lo que puedes ver depende de tu rol asignado." },
 
   /* ── Dashboard ──────────────────────────────────────────────── */
   { keys: ["dashboard", "inicio", "página principal", "resumen", "tarjeta"],
-    resp: "El Dashboard es tu punto de partida. Muestra tus cursos en progreso, los últimos avisos y el estado de los indicadores RSE. Si es tu primera vez en el sistema, verás un tutorial de bienvenida." },
+    resp: "El Dashboard es tu punto de partida. Muestra tus cursos en progreso, los últimos avisos y el estado de los indicadores de Sostenibilidad. Si es tu primera vez en el sistema, verás un tutorial de bienvenida." },
 
   /* ── Contraseña ─────────────────────────────────────────────── */
   { keys: ["contraseña", "password", "clave", "olvidé", "olvidaste", "recuperar", "cambiar clave"],
@@ -25,15 +25,15 @@ const KB = [
 
   /* ── Comunicación / Avisos / Documentos ────────────────────── */
   { keys: ["aviso", "comunicacion", "comunicación", "documento", "descargar", "descarga", "publicar aviso"],
-    resp: "En Comunicación encuentras avisos institucionales, documentos descargables y videos RSE. Los avisos urgentes muestran un punto rojo en la campana del topbar." },
+    resp: "En Comunicación encuentras avisos institucionales, documentos descargables y videos de Sostenibilidad. Los avisos urgentes muestran un punto rojo en la campana del topbar." },
 
-  /* ── Indicadores RSE ─────────────────────────────────────────── */
+  /* ── Indicadores de Sostenibilidad ─────────────────────────────────────────── */
   { keys: ["indicador", "semaforo", "semáforo", "rse", "sostenibilidad", "verde", "rojo", "amarillo", "ejes", "porcentaje"],
-    resp: "Los Indicadores RSE tienen semáforo: 🟢 Óptimo (70%+), 🟡 En progreso (40–69%), 🔴 En riesgo (<40%). Presiona el ícono ℹ en cada eje para ver sus métricas detalladas." },
+    resp: "Los Indicadores de Sostenibilidad tienen semáforo: 🟢 Óptimo (70%+), 🟡 En progreso (40–69%), 🔴 En riesgo (<40%). Presiona el ícono ℹ en cada eje para ver sus métricas detalladas." },
 
   /* ── 5 Ejes RSE por nombre ──────────────────────────────────── */
-  { keys: ["gobernanza", "clientes", "comunidad", "trabajadores", "medio ambiente", "eje rse"],
-    resp: "Los 5 ejes RSE de Operadora Barú son: 🏛 Gobernanza (cumplimiento y ética), 🤝 Clientes (NPS y satisfacción), 🌍 Comunidad (proyectos sociales), 👷 Trabajadores (clima laboral) y 🌱 Medio Ambiente (huella ecológica)." },
+  { keys: ["gobernanza", "clientes", "comunidad", "trabajadores", "medio ambiente", "eje de sostenibilidad"],
+    resp: "Los 5 ejes de Sostenibilidad de Operadora Barú son: 🏛 Gobernanza (cumplimiento y ética), 🤝 Clientes (NPS y satisfacción), 🌍 Comunidad (proyectos sociales), 👷 Trabajadores (clima laboral) y 🌱 Medio Ambiente (huella ecológica)." },
 
   /* ── Roles y permisos ───────────────────────────────────────── */
   { keys: ["rol", "permiso", "acceso", "módulo", "modulo", "página", "pagina", "no puedo ver", "no tengo acceso"],

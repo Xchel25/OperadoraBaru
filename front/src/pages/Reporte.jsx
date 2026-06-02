@@ -50,13 +50,13 @@ function fmtDate(d) {
 const MODULES = [
   {
     id:          "indicadores",
-    title:       "Indicadores RSE",
+    title:       "Indicadores de Sostenibilidad",
     description: "Todos los ejes de sostenibilidad — valores, períodos y fechas de registro",
     icon:        TrendingUp,
     gradient:    "from-blue-500 to-violet-600",
     color:       "#6366f1",
     fetch:       apiGetIndicadores,
-    filename:    () => `RSE_Indicadores_${new Date().toISOString().slice(0,10)}.csv`,
+    filename:    () => `Sostenibilidad_Indicadores_${new Date().toISOString().slice(0,10)}.csv`,
     toCsv: (data) => buildCsv(
       ["Eje", "Valor (%)", "Período", "Fecha de registro"],
       data.map(r => [r.category, r.value, r.period, fmtDate(r.createdAt)])

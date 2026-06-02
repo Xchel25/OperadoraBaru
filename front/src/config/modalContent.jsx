@@ -135,11 +135,11 @@ export const modalContent = {
           <StatCard label="Colaboradores activos"  value={activos}         icon={Users}     from="from-blue-500"    to="to-blue-700" />
           <StatCard label="Cursos disponibles"     value={cursos.length}   icon={BookOpen}  from="from-violet-500"  to="to-violet-700" />
           <StatCard label="Avisos publicados"      value={avisos.length}   icon={Bell}      from="from-amber-500"   to="to-amber-700" sub="activos" />
-          <StatCard label="Índice RSE global"      value={`${globalPct}%`} icon={TrendingUp} from="from-emerald-500" to="to-emerald-700" />
+          <StatCard label="Índice de Sostenibilidad global"      value={`${globalPct}%`} icon={TrendingUp} from="from-emerald-500" to="to-emerald-700" />
         </div>
         {inds.length > 0 && (
           <div className="bg-white/10 rounded-xl p-4">
-            <p className="text-sm font-semibold mb-3 text-white/80">Indicadores RSE</p>
+            <p className="text-sm font-semibold mb-3 text-white/80">Indicadores de Sostenibilidad</p>
             {inds.map((ind, i) => (
               <div key={i} className="mb-3 last:mb-0">
                 <div className="flex justify-between mb-1.5">
@@ -177,7 +177,7 @@ export const modalContent = {
       <div className="grid grid-cols-2 gap-3">
         <StatCard label="Colaboradores activos"  value={activos}           icon={Users}    from="from-blue-500"   to="to-cyan-600" />
         <StatCard label="NPS Clientes"           value={Math.round(nps)}   icon={Star}     from="from-amber-500"  to="to-orange-600" />
-        <StatCard label="Indicadores RSE"        value={`${inds.length}/5`} icon={TrendingUp} from="from-emerald-500" to="to-emerald-700" />
+        <StatCard label="Indicadores de Sostenibilidad"        value={`${inds.length}/5`} icon={TrendingUp} from="from-emerald-500" to="to-emerald-700" />
         <StatCard label="Avisos activos"         value="—"                 icon={Bell}     from="from-violet-500" to="to-violet-700" sub="ver Avisos" />
         {inds.map((ind, i) => (
           <StatCard
@@ -356,7 +356,7 @@ export const modalContent = {
     );
   },
 
-  "Videos RSE": function VideosModal() {
+  "Videos de Sostenibilidad": function VideosModal() {
     const videos = [
       { title: "Programa de Reciclaje en la Empresa",        dur: "4:32", color: "from-green-600 to-teal-700" },
       { title: "Voluntariado Comunitario",                   dur: "6:14", color: "from-blue-600 to-indigo-700" },
@@ -713,7 +713,7 @@ const EJE_INFO = {
   "Clientes":       { icon: Star,   color: "from-amber-500 to-amber-700",  sub: "NPS, satisfacción y encuestas por área" },
   "Comunidad":      { icon: Heart,  color: "from-green-500 to-green-700",  sub: "Programas sociales, campañas y participación" },
   "Trabajadores":   { icon: Users,  color: "from-violet-500 to-violet-700",sub: "Indicadores laborales, rotación y clima" },
-  "Medio ambiente": { icon: Leaf,   color: "from-teal-500 to-teal-700",   sub: "Acciones RSE, consumo energético y campañas" },
+  "Medio ambiente": { icon: Leaf,   color: "from-teal-500 to-teal-700",   sub: "Acciones de sostenibilidad, consumo energético y campañas" },
 };
 
 function EjeDetailModal({ category }) {

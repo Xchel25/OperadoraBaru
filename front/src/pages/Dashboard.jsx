@@ -31,7 +31,7 @@ const WELCOME_SLIDES = [
     gradient: "from-blue-500 to-violet-600",
     emoji: "👋",
     title: "¡Bienvenido a Operadora Barú!",
-    desc: "Tu plataforma de gestión RSE. Aquí puedes capacitarte, mantenerte informado y consultar los indicadores de sostenibilidad de la empresa.",
+    desc: "Tu plataforma de gestión de Sostenibilidad. Aquí puedes capacitarte, mantenerte informado y consultar los indicadores de sostenibilidad de la empresa.",
   },
   {
     gradient: "from-violet-500 to-violet-700",
@@ -43,12 +43,12 @@ const WELCOME_SLIDES = [
     gradient: "from-green-500 to-teal-600",
     emoji: "📢",
     title: "Comunicación",
-    desc: "Revisa los avisos institucionales más recientes, descarga documentos importantes de la empresa y consulta los videos RSE.",
+    desc: "Revisa los avisos institucionales más recientes, descarga documentos importantes de la empresa y consulta los videos de Sostenibilidad.",
   },
   {
     gradient: "from-amber-500 to-amber-700",
     emoji: "📊",
-    title: "Indicadores RSE",
+    title: "Indicadores de Sostenibilidad",
     desc: "Consulta los 5 ejes de sostenibilidad: Gobernanza, Clientes, Comunidad, Trabajadores y Medio Ambiente. Se actualizan trimestralmente.",
   },
 ];
@@ -197,7 +197,7 @@ function Dashboard() {
   const stats = [
     { label: "Cursos disponibles", value: cursosVisibles.length || "—",  icon: BookOpen,   gradient: "from-violet-500 to-violet-700", delta: completados ? `${completados} completado${completados !== 1 ? "s" : ""}` : null, deltaUp: true },
     { label: "Avisos activos",     value: avisos.filter(a => a.active !== false).length || "—", icon: Bell, gradient: "from-amber-500 to-amber-700", delta: avisos.length ? `${avisos.length} en total` : null, deltaUp: true },
-    { label: "Indicadores RSE",    value: indicadores.length || "—",     icon: TrendingUp, gradient: "from-blue-500 to-blue-700",   delta: indicadores[0]?.period || null, deltaUp: true },
+    { label: "Indicadores de Sostenibilidad",    value: indicadores.length || "—",     icon: TrendingUp, gradient: "from-blue-500 to-blue-700",   delta: indicadores[0]?.period || null, deltaUp: true },
     { label: "Cursos completados", value: completados || "—",            icon: Star,       gradient: "from-emerald-500 to-emerald-700", delta: cursosVisibles.length ? `de ${cursosVisibles.length} disponibles` : null, deltaUp: true },
   ];
 
@@ -216,7 +216,7 @@ function Dashboard() {
     if (lastCompleted) actividadItems.push({ icon: Star, text: `Completaste: "${lastCompleted.title}"`, time: "Reciente", color: "text-violet-500 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-500/10" });
   }
   if (indicadores.length > 0) {
-    actividadItems.push({ icon: TrendingUp, text: `Indicadores RSE — periodo ${indicadores[0].period}`, time: indicadores[0].period, color: "text-blue-500 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-500/10" });
+    actividadItems.push({ icon: TrendingUp, text: `Indicadores de Sostenibilidad — periodo ${indicadores[0].period}`, time: indicadores[0].period, color: "text-blue-500 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-500/10" });
   }
   const actividad = actividadItems.slice(0, 4);
 
@@ -318,7 +318,7 @@ function Dashboard() {
             <div className="text-center py-8 text-gray-400 dark:text-white/30">
               <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-40" />
               <p className="text-sm">Sin datos de indicadores aún</p>
-              <p className="text-xs mt-1 opacity-70">Los indicadores se registran desde la página Indicadores RSE</p>
+              <p className="text-xs mt-1 opacity-70">Los indicadores se registran desde la página Indicadores de Sostenibilidad</p>
             </div>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
