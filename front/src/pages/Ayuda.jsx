@@ -209,6 +209,7 @@ function Chatbot() {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
   };
 
+
   return (
     <div className="bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 flex flex-col h-[22rem]">
       {/* Header */}
