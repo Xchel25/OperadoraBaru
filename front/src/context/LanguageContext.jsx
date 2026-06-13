@@ -34,6 +34,9 @@ const T = {
     cfg_title:        "Configuración",
     cfg_sub:          "Seguridad, preferencias y ajustes del sistema",
     logout:           "Cerrar sesión",
+    language:         "Idioma",
+    timezone:         "Zona horaria",
+    dateFormat:       "Formato de fecha",
   },
   en: {
     nav_dashboard:    "Dashboard",
@@ -67,6 +70,9 @@ const T = {
     cfg_title:        "Settings",
     cfg_sub:          "Security, preferences and system settings",
     logout:           "Sign out",
+    language:         "Language",
+    timezone:         "Timezone",
+    dateFormat:       "Date format",
   },
 };
 

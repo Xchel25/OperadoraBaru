@@ -157,6 +157,8 @@ function Dashboard() {
   const hora      = new Date().getHours();
   const saludo    = hora < 12 ? "Buenos días" : hora < 19 ? "Buenas tardes" : "Buenas noches";
   const firstName = user?.name?.split(" ")[0] || "Usuario";
+  const fechaStr  = new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long" });
+  const fecha     = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
 
   useEffect(() => {
     Promise.all([
@@ -232,8 +234,8 @@ function Dashboard() {
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               {saludo}, {firstName}
             </h1>
-            <p className="text-xs sm:text-sm text-gray-400 dark:text-white/40 mt-1 capitalize">
-              {new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long" })}
+            <p className="text-xs sm:text-sm text-gray-400 dark:text-white/40 mt-1">
+              {fecha}
             </p>
           </div>
           <span className="text-xs px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 font-medium shrink-0">
