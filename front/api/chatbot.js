@@ -184,11 +184,21 @@ module.exports = async function handler(req, res) {
     });
 
     const data = await geminiRes.json();
+
+    if (!geminiRes.ok) {
+      const errMsg = data?.error?.message || "Error desconocido de Gemini";
+      console.error("Gemini API error:", geminiRes.status, errMsg, JSON.stringify(data));
+      return res.status(500).json({ error: errMsg });
+    }
+
     const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!reply) throw new Error("Sin respuesta de Gemini");
+    if (!reply) {
+      console.error("Gemini sin reply:", JSON.stringify(data));
+      return res.status(500).json({ error: "Gemini no devolvió respuesta" });
+    }
     res.status(200).json({ reply });
   } catch (err) {
-    console.error("Gemini error:", err.message);
-    res.status(500).json({ error: "No se pudo procesar el mensaje" });
+    console.error("Gemini fetch error:", err.message);
+    res.status(500).json({ error: err.message });
   }
 };
