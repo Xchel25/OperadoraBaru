@@ -142,9 +142,21 @@ export const apiDeleteReporte = (id) =>
 // ─── DISPOSITIVOS ─────────────────────────────────────────────────────────────
 
 // ─── CHATBOT ─────────────────────────────────────────────────────────────────
+// En producción (Vercel) llama a la función serverless /api/chatbot.
+// En desarrollo llama al backend local en Railway/Docker.
 
-export const apiChatbot = (message, history) =>
-  api.post("/chatbot/mensaje", { message, history }).then((r) => r.data);
+export const apiChatbot = async (message, history) => {
+  const url = import.meta.env.PROD
+    ? "/api/chatbot"
+    : `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/chatbot/mensaje`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, history }),
+  });
+  if (!res.ok) throw new Error("Chatbot error");
+  return res.json();
+};
 
 // ─── DISPOSITIVOS ─────────────────────────────────────────────────────────────
 
