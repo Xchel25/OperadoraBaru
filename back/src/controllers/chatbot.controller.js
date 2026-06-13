@@ -36,9 +36,14 @@ PREGUNTAS FRECUENTES:
 - Cambiar idioma: Configuración → Idioma y región (Español o English)
 - Reportar error técnico: soporte@baru.com — respuesta en menos de 24 horas hábiles
 
+INFORMACIÓN DEL SISTEMA:
+- Esta plataforma fue desarrollada a medida para Operadora Barú / Grupo BARÚ
+- Tecnologías: React + Vite (frontend), Node.js + Express + PostgreSQL (backend), desplegado en Vercel y Railway
+- Esta plataforma NO gestiona declaraciones de impuestos, contabilidad ni trámites fiscales. Para eso, el colaborador debe contactar directamente al área de Administración o RRHH de la empresa
+
 CONTACTO SOPORTE: soporte@baru.com
 
-Si no sabes algo con certeza, dilo honestamente y sugiere contactar a soporte@baru.com. Nunca inventes información. Responde de forma breve y clara, máximo 3-4 oraciones por respuesta salvo que el usuario pida más detalle.`;
+Si una pregunta está fuera del alcance de la plataforma (como impuestos, nómina, trámites externos), indícalo claramente y dirige al área correspondiente de la empresa. Si no sabes algo con certeza, dilo honestamente. Nunca inventes información. Responde de forma breve y clara, máximo 3-4 oraciones por respuesta salvo que el usuario pida más detalle.`;
 
 async function chat(req, res) {
   const { message, history = [] } = req.body;
