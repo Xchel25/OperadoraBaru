@@ -141,6 +141,13 @@ export const apiDeleteReporte = (id) =>
 
 // ─── DISPOSITIVOS ─────────────────────────────────────────────────────────────
 
+// ─── CHATBOT ─────────────────────────────────────────────────────────────────
+
+export const apiChatbot = (message, history) =>
+  api.post("/chatbot/mensaje", { message, history }).then((r) => r.data);
+
+// ─── DISPOSITIVOS ─────────────────────────────────────────────────────────────
+
 export const apiGetDevices        = ()         => api.get("/devices").then((r) => r.data);
 export const apiGetPendingDevices = ()         => api.get("/devices/pending").then((r) => r.data);
 export const apiApproveDevice     = (id)       => api.put(`/devices/${id}/approve`).then((r) => r.data);

@@ -11,6 +11,7 @@ const comunicacionRoutes = require("./routes/comunicacion.routes");
 const indicadoresRoutes  = require("./routes/indicadores.routes");
 const reporteRoutes      = require("./routes/reporte.routes");
 const deviceRoutes       = require("./routes/device.routes");
+const chatbotRoutes      = require("./routes/chatbot.routes");
 const { errorHandler }   = require("./middlewares/error.middleware");
 
 const app = express();
@@ -32,6 +33,7 @@ app.use("/api/comunicacion", comunicacionRoutes);
 app.use("/api/indicadores",  indicadoresRoutes);
 app.use("/api/reportes",     reporteRoutes);
 app.use("/api/devices",     deviceRoutes);
+app.use("/api/chatbot",     chatbotRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

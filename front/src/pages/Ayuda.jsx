@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { ROLE_LABELS } from "../config/roles";
 import { useLanguage } from "../context/LanguageContext";
-import { botReply } from "../config/botKB";
+import { apiChatbot } from "../services/api";
 
 /* ─── Datos de rol ─────────────────────────────────────────────── */
 const ROLE_ICON = {
@@ -179,18 +179,23 @@ function Chatbot() {
     if (messages.length > 0) localStorage.setItem(msgKey, JSON.stringify(messages));
   }, [messages, msgKey]);
 
-  const send = (text) => {
+  const send = async (text) => {
     const trimmed = (text || input).trim();
-    if (!trimmed) return;
+    if (!trimmed || typing) return;
     setInput("");
     setHasStarted(true);
     localStorage.setItem(startedKey, "1");
-    setMessages(prev => [...prev, { from: "user", text: trimmed }]);
+    const currentMessages = [...messages, { from: "user", text: trimmed }];
+    setMessages(currentMessages);
     setTyping(true);
-    setTimeout(() => {
+    try {
+      const { reply } = await apiChatbot(trimmed, messages);
+      setMessages(prev => [...prev, { from: "bot", text: reply }]);
+    } catch {
+      setMessages(prev => [...prev, { from: "bot", text: "Lo siento, no pude conectarme en este momento. Intenta de nuevo o escribe a soporte@baru.com." }]);
+    } finally {
       setTyping(false);
-      setMessages(prev => [...prev, { from: "bot", text: botReply(trimmed) }]);
-    }, 900);
+    }
   };
 
   const clearChat = () => {
