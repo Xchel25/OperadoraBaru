@@ -192,7 +192,7 @@ function Chatbot() {
       const { reply } = await apiChatbot(trimmed, messages);
       setMessages(prev => [...prev, { from: "bot", text: reply }]);
     } catch {
-      setMessages(prev => [...prev, { from: "bot", text: "Lo siento, no pude conectarme en este momento. Intenta de nuevo o escribe a soporte@baru.com." }]);
+      setMessages(prev => [...prev, { from: "bot", text: "Un momento, el servicio está ocupado. Vuelve a intentarlo en unos segundos 🙂" }]);
     } finally {
       setTyping(false);
     }

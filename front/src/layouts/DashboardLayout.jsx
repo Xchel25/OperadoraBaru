@@ -87,7 +87,7 @@ function DashboardLayout({ children }) {
       const { reply } = await apiChatbot(text, chatMessages.slice(1));
       setChatMessages(prev => [...prev, { from: "bot", text: reply }]);
     } catch {
-      setChatMessages(prev => [...prev, { from: "bot", text: "Lo siento, no pude conectarme. Intenta de nuevo o ve a Ayuda para usar el asistente completo." }]);
+      setChatMessages(prev => [...prev, { from: "bot", text: "Un momento, el servicio está ocupado. Vuelve a intentarlo en unos segundos 🙂" }]);
     } finally {
       setChatTyping(false);
     }

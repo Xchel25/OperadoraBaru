@@ -174,20 +174,28 @@ export default async function handler(req, res) {
     { role: "user", content: message.trim() },
   ];
 
-  try {
-    const groqRes = await fetch(GROQ_URL, {
+  const body = JSON.stringify({
+    model: GROQ_MODEL,
+    messages,
+    max_tokens: 512,
+    temperature: 0.7,
+  });
+
+  const callGroq = () =>
+    fetch(GROQ_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages,
-        max_tokens: 512,
-        temperature: 0.7,
-      }),
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+      body,
     });
+
+  try {
+    let groqRes = await callGroq();
+
+    // Reintento automático si Groq devuelve rate limit (429)
+    if (groqRes.status === 429) {
+      await new Promise((r) => setTimeout(r, 2000));
+      groqRes = await callGroq();
+    }
 
     const data = await groqRes.json();
 
