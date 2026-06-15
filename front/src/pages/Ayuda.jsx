@@ -9,6 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import { ROLE_LABELS } from "../config/roles";
 import { useLanguage } from "../context/LanguageContext";
 import { apiChatbot } from "../services/api";
+import { botReply } from "../config/botKB";
 
 /* ─── Datos de rol ─────────────────────────────────────────────── */
 const ROLE_ICON = {
@@ -192,7 +193,7 @@ function Chatbot() {
       const { reply } = await apiChatbot(trimmed, messages);
       setMessages(prev => [...prev, { from: "bot", text: reply }]);
     } catch {
-      setMessages(prev => [...prev, { from: "bot", text: "Un momento, el servicio está ocupado. Vuelve a intentarlo en unos segundos 🙂" }]);
+      setMessages(prev => [...prev, { from: "bot", text: botReply(trimmed) }]);
     } finally {
       setTyping(false);
     }

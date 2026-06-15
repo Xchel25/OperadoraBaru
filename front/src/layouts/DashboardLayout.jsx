@@ -11,6 +11,7 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
+import { botReply } from "../config/botKB";
 import { useNavigate, useLocation } from "react-router-dom";
 import sidebarConfig from "../config/sidebarConfig";
 import { modalContent } from "../config/modalContent";
@@ -87,7 +88,7 @@ function DashboardLayout({ children }) {
       const { reply } = await apiChatbot(text, chatMessages.slice(1));
       setChatMessages(prev => [...prev, { from: "bot", text: reply }]);
     } catch {
-      setChatMessages(prev => [...prev, { from: "bot", text: "Un momento, el servicio está ocupado. Vuelve a intentarlo en unos segundos 🙂" }]);
+      setChatMessages(prev => [...prev, { from: "bot", text: botReply(text) }]);
     } finally {
       setChatTyping(false);
     }
