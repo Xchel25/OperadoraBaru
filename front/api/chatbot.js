@@ -146,7 +146,8 @@ Desarrollador (para nuevos proyectos o apps a medida):
 
 Responde siempre en español, de forma amable y profesional. Sé conciso (máximo 3-4 oraciones salvo que pidan más detalle). Nunca inventes información. Si algo está fuera del alcance de la plataforma, indícalo y dirige al contacto correcto.`;
 
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.1-8b-instant";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -159,46 +160,51 @@ export default async function handler(req, res) {
   const { message, history = [] } = req.body || {};
   if (!message?.trim()) return res.status(400).json({ error: "Mensaje vacío" });
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(500).json({ error: "API key no configurada" });
 
-  const contents = [
+  const messages = [
+    { role: "system", content: SYSTEM_PROMPT },
     ...history
       .filter((m) => m.text?.trim())
       .map((m) => ({
-        role: m.from === "user" ? "user" : "model",
-        parts: [{ text: m.text }],
+        role: m.from === "user" ? "user" : "assistant",
+        content: m.text,
       })),
-    { role: "user", parts: [{ text: message.trim() }] },
+    { role: "user", content: message.trim() },
   ];
 
   try {
-    const geminiRes = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+    const groqRes = await fetch(GROQ_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents,
-        generationConfig: { maxOutputTokens: 512, temperature: 0.7 },
+        model: GROQ_MODEL,
+        messages,
+        max_tokens: 512,
+        temperature: 0.7,
       }),
     });
 
-    const data = await geminiRes.json();
+    const data = await groqRes.json();
 
-    if (!geminiRes.ok) {
-      const errMsg = data?.error?.message || "Error desconocido de Gemini";
-      console.error("Gemini API error:", geminiRes.status, errMsg, JSON.stringify(data));
+    if (!groqRes.ok) {
+      const errMsg = data?.error?.message || "Error desconocido de Groq";
+      console.error("Groq API error:", groqRes.status, errMsg);
       return res.status(500).json({ error: errMsg });
     }
 
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const reply = data?.choices?.[0]?.message?.content;
     if (!reply) {
-      console.error("Gemini sin reply:", JSON.stringify(data));
-      return res.status(500).json({ error: "Gemini no devolvió respuesta" });
+      console.error("Groq sin reply:", JSON.stringify(data));
+      return res.status(500).json({ error: "Sin respuesta del modelo" });
     }
     res.status(200).json({ reply });
   } catch (err) {
-    console.error("Gemini fetch error:", err.message);
+    console.error("Groq fetch error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
