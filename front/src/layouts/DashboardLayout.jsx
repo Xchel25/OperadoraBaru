@@ -11,8 +11,6 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import { botReply } from "../config/botKB";
-
 import { useNavigate, useLocation } from "react-router-dom";
 import sidebarConfig from "../config/sidebarConfig";
 import { modalContent } from "../config/modalContent";
@@ -22,7 +20,7 @@ import logoBlanco from "../assets/Barublanco.png";
 import logoNegro from "../assets/barunegro.png";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
-import { apiGetNotices } from "../services/api";
+import { apiGetNotices, apiChatbot } from "../services/api";
 
 // Renderiza cada modal como componente React (permite usar hooks dentro de modalContent)
 function ModalRenderer({ name }) {
@@ -78,16 +76,21 @@ function DashboardLayout({ children }) {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages, chatTyping]);
 
-  const sendChat = () => {
+  const sendChat = async () => {
     const text = chatInput.trim();
     if (!text || chatTyping) return;
     setChatInput("");
-    setChatMessages(prev => [...prev, { from: "user", text }]);
+    const currentMessages = [...chatMessages, { from: "user", text }];
+    setChatMessages(currentMessages);
     setChatTyping(true);
-    setTimeout(() => {
+    try {
+      const { reply } = await apiChatbot(text, chatMessages.slice(1));
+      setChatMessages(prev => [...prev, { from: "bot", text: reply }]);
+    } catch {
+      setChatMessages(prev => [...prev, { from: "bot", text: "Lo siento, no pude conectarme. Intenta de nuevo o ve a Ayuda para usar el asistente completo." }]);
+    } finally {
       setChatTyping(false);
-      setChatMessages(prev => [...prev, { from: "bot", text: botReply(text) }]);
-    }, 900);
+    }
   };
 
   const userInitials = user?.name
