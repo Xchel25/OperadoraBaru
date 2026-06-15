@@ -146,7 +146,7 @@ Desarrollador (para nuevos proyectos o apps a medida):
 
 Responde siempre en español, de forma amable y profesional. Sé conciso (máximo 3-4 oraciones salvo que pidan más detalle). Nunca inventes información. Si algo está fuera del alcance de la plataforma, indícalo y dirige al contacto correcto.`;
 
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
