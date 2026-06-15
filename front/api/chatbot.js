@@ -186,18 +186,28 @@ export default async function handler(req, res) {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
       body,
+      signal: AbortSignal.timeout(8000),
     });
 
+  const delays = [1500, 3000];
+
   try {
-    let groqRes = await callGroq();
+    let groqRes;
+    let data;
 
-    // Reintento automático si Groq devuelve rate limit (429)
-    if (groqRes.status === 429) {
-      await new Promise((r) => setTimeout(r, 2000));
-      groqRes = await callGroq();
+    for (let attempt = 0; attempt <= delays.length; attempt++) {
+      try {
+        groqRes = await callGroq();
+        data = await groqRes.json();
+        if (groqRes.ok) break;
+      } catch (fetchErr) {
+        if (attempt === delays.length) throw fetchErr;
+      }
+      if (attempt < delays.length) {
+        console.warn(`Groq intento ${attempt + 1} fallido (${groqRes?.status}), reintentando...`);
+        await new Promise((r) => setTimeout(r, delays[attempt]));
+      }
     }
-
-    const data = await groqRes.json();
 
     if (!groqRes.ok) {
       const errMsg = data?.error?.message || "Error desconocido de Groq";
